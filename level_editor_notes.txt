@@ -1,0 +1,6 @@
+-1 : empty
+0 : normal ground 
+
+image_dict : { 
+    0 : pygame.Surface()
+}
