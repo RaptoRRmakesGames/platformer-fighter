@@ -73,8 +73,11 @@ class Game:
         }
         
     def update_game(self):
-        
+
         self.clocks['clock'].tick_busy_loop(self.clocks['target_fps'])
         
         self.clocks['fps'] = round(self.clocks['clock'].get_fps())
+        
+        
+        # self.clocks['dt'] = self.clocks['clock'].tick() / 1000
         
