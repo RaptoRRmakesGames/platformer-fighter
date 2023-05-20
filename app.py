@@ -11,6 +11,8 @@ level = 2
 
 run = True
 
+print("hello world")
+
 # game.tiles['level'].edit_tile(10,1, 0)
 # game.tiles['level'].edit_tile(10,2, 0)
 # game.tiles['level'].edit_tile(10,3, 0)
