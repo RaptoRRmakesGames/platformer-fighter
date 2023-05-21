@@ -33,7 +33,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.color = colour
         
-    def shoot(self):
+    def shoot(self, player):
         
         if self.shooting and self.state == "attack":
             
@@ -41,9 +41,13 @@ class Enemy(pygame.sprite.Sprite):
             
             if time_now > self.next_shoot:
                 
-                if randint(1,2) == 1:
+                if randint(1,3) == 1:
                     
-                    self.shoot_controller.shoot()
+                    random_x, random_y = randint(-20,20), randint(-20,20)
+                    
+                    self.shoot_controller.shoot((player.rect.center[0] + random_x, player.rect.center[1] + random_y))
+                    
+                self.next_shoot = time_now + self.fr
                     
     def detect_player(self, player, tiles, screen):
         player_pos = pygame.math.Vector2(player.rect.center)
@@ -76,9 +80,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.state = self.detect_player(player, tiles, screen)
         
-        print(self.state)
-        
-        # self.shoot()
+        self.shoot(player)
         
         self.shoot_controller.update_bullets(screen, tiles)
         

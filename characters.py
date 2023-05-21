@@ -52,9 +52,9 @@ class ShootController:
         
         self.bullets = []
         
-    def shoot(self):
+    def shoot(self, target_pos):
         
-        self.bullets.append(Bullet(self, pygame.mouse.get_pos()))
+        self.bullets.append(Bullet(self, target_pos))
     
     def update_bullets(self, screen, tiles):
         
@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
         
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
             
-            self.shooter.shoot()
+            self.shooter.shoot(pygame.mouse.get_pos())
             
             self.next_shot = pygame.time.get_ticks() + self.shot_interval
             
@@ -126,7 +126,7 @@ class Player(pygame.sprite.Sprite):
         
         self.next_x = 0
         
-        if keys[K_LSHIFT]:
+        if keys[K_LSHIFT]: # Sprinting
             
             if self.on_ground:
             
@@ -136,15 +136,25 @@ class Player(pygame.sprite.Sprite):
             
             self.speed = 2
         
-        if keys[K_a]:
+        if keys[K_LCTRL]: # Crouching
+            
+            self.rect.height = 20
+            self.speed = self.base_speed * 0.5
+            
+        else:
+            
+            self.rect.height = 30
+        
+        
+        if keys[K_a]: # Moving Left
             
             self.next_x = -self.speed
             
-        if keys[K_d]:
+        if keys[K_d]: # Moving Right
             
             self.next_x = self.speed
             
-        if keys[K_SPACE] and self.on_ground:
+        if keys[K_SPACE] and self.on_ground: # Jumping
             
             self.on_ground = False
             

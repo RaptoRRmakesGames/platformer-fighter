@@ -31,8 +31,10 @@ game.tiles['level'].edit_tile(11,7, 0)
 player = characters.Player((100,100))
 
 
-enemy_list = [enemies.Enemy((200,400), "normal", True, 0, 100, 5) for i in range(2)]
+enemy_list = [enemies.Enemy((200,400), "normal", True, 0, 400, 5) for i in range(2)]
 # enemy = enemies.Enemy((50,400), "normal", True, 0, 100, 5)
+
+slomo = False
 
 while run: 
     game.update_game()
@@ -53,6 +55,30 @@ while run:
             run = False
             
             quit()
+        
+        if event.type == KEYDOWN:
+            
+            if event.key == K_f:
+                
+                slomo = not slomo 
+                
+    if slomo :
+        
+        game.clocks['target_fps'] = 60
+        
+    else: 
+        game.clocks['target_fps'] = 140
+
+            
+    # keys = pygame.key.get_pressed()
+    
+    # if keys[K_f]:
+        
+    #     game.clocks['target_fps'] = 60
+    
+    # else: 
+
+    #     game.clocks['target_fps'] = 140
             
     pygame.display.set_caption(str(game.clocks['fps']) + "FPS" )
             

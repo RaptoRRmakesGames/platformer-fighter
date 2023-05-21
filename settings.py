@@ -1,2 +1,2 @@
-G = 0.2
-bullet_speed = 8
+G = 0.2 # Acceleration of gravity
+bullet_speed = 4 # Bullet Speed
