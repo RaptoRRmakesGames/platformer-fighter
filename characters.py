@@ -67,7 +67,7 @@ class ShootController:
             
             bullet.update(screen, tiles)
             
-        print(len(self.bullets))
+        # print(len(self.bullets))
 
         
 

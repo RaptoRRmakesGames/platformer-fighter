@@ -1,4 +1,4 @@
-import pygame, game_data, characters
+import pygame, game_data, characters, enemies
 from pygame.locals import *
 
 black = pygame.Surface((50,50))
@@ -16,7 +16,6 @@ game.tiles['level'].edit_tile(10,1, 0)
 game.tiles['level'].edit_tile(10,2, 0)
 game.tiles['level'].edit_tile(10,3, 0)
 game.tiles['level'].edit_tile(10,4, 0)
-
 game.tiles['level'].edit_tile(10,7, 0)
 game.tiles['level'].edit_tile(9,7, 0)
 game.tiles['level'].edit_tile(9,8, 0)
@@ -26,9 +25,14 @@ game.tiles['level'].edit_tile(10,11, 0)
 game.tiles['level'].edit_tile(11,9, 0)
 game.tiles['level'].edit_tile(11,8, 0)
 game.tiles['level'].edit_tile(11,7, 0)
+
 # game.tiles['level'].load_level(f"level{level}.lvl")
 
 player = characters.Player((100,100))
+
+
+enemy_list = [enemies.Enemy((200,400), "normal", True, 0, 100, 5) for i in range(2)]
+# enemy = enemies.Enemy((50,400), "normal", True, 0, 100, 5)
 
 while run: 
     game.update_game()
@@ -36,6 +40,10 @@ while run:
     game.tiles['level'].draw_world((0,0))
     
     player.update(game.screens['screen'], game.tiles['level'].world_data)
+    
+    for enemy in enemy_list:
+    
+        enemy.update(game.screens['screen'], game.tiles['level'].world_data, player)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,6 +53,8 @@ while run:
             run = False
             
             quit()
+            
+    pygame.display.set_caption(str(game.clocks['fps']) + "FPS" )
             
     # print(game.clocks['fps'], "FPS")
             
