@@ -5,6 +5,7 @@ black = pygame.Surface((50,50))
 
 black.fill((0,0,0))
 
+
 game = game_data.Game((600,600), 50, (14,14), {0: black},140)
 
 level = 1
@@ -25,13 +26,14 @@ game.tiles['level'].edit_tile(10,11, 0)
 game.tiles['level'].edit_tile(11,9, 0)
 game.tiles['level'].edit_tile(11,8, 0)
 game.tiles['level'].edit_tile(11,7, 0)
+game.tiles['level'].edit_tile(7,3, 0)
 
 # game.tiles['level'].load_level(f"level{level}.lvl")
 
 player = characters.Player((100,100))
 
 
-enemy_list = [enemies.Enemy((100,400), "normal", True, 0, 200, 5) for i in range(2)]
+enemy_list = [enemies.Enemy((100,400), "normal", True, 0, 200, 5, hp=10) for i in range(1)]
 # enemy = enemies.Enemy((50,400), "normal", True, 0, 100, 5)
 
 slomo = False
@@ -45,7 +47,7 @@ while run:
     
     for enemy in enemy_list:
     
-        enemy.update(game.screens['screen'], game.tiles['level'].world_data, player)
+        enemy.update(game.screens['screen'], game.tiles['level'].world_data, player, player.shooter.bullets, enemy_list)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

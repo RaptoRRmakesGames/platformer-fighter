@@ -4,7 +4,7 @@ from random import randint, choice
 import math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, id, shooting, least_x, max_x, damage, colour = (0,0,255), firerate=300, speed=2) :
+    def __init__(self, pos, id, shooting, least_x, max_x, damage, colour = (0,0,255), firerate=300, speed=2, hp = 1) :
         pygame.sprite.Sprite.__init__(self)
         
         self.type = id 
@@ -44,6 +44,8 @@ class Enemy(pygame.sprite.Sprite):
         self.next_might_stop = pygame.time.get_ticks() + self.might_stop_interval
         self.start_move_interval = 500
         self.next_start_move = pygame.time.get_ticks()
+        
+        self.hp = hp
         
     def shoot(self, player):
         
@@ -105,6 +107,30 @@ class Enemy(pygame.sprite.Sprite):
                             self.vel_y = 0 
                             self.next_y = tilerect.top - self.rect.bottom
                             
+    def check_dead(self, bullets, enemy_list):
+        
+        for bullet in bullets:
+            
+            if self.rect.colliderect(bullet.rect):
+                
+                bullet.to_be_removed = True
+                
+                # print("shot")
+                
+                self.hp -= 1
+                
+        if self.hp < 1:
+            
+            
+            # drop coins 
+            
+            enemy_list.remove(self)
+            
+            
+            
+        
+        
+                            
     def move(self, player):
         
 
@@ -156,7 +182,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.next_y = self.vel_y
                     
-    def update(self, screen, tiles, player):
+    def update(self, screen, tiles, player, bullets, enemy_list):
         self.position = pygame.math.Vector2(self.rect.center)
         
         self.state = self.detect_player(player, tiles, screen)
@@ -166,6 +192,8 @@ class Enemy(pygame.sprite.Sprite):
         self.move(player)
         self.collisions(tiles)
         
+        self.check_dead(bullets, enemy_list)
+        
         self.rect.x += self.next_x
         self.rect.y += self.next_y
         
@@ -174,6 +202,6 @@ class Enemy(pygame.sprite.Sprite):
         pygame.draw.rect(screen,  self.color, self.rect)
         
         # print(self.least_x, self.max_x, self.rect.x, self.ori, self.state)
-        print(pygame.time.get_ticks(), self.should_stop, self.next_start_move, self.next_might_stop)
+        # print(pygame.time.get_ticks(), self.should_stop, self.next_start_move, self.next_might_stop)
         
         

@@ -158,7 +158,7 @@ class Player(pygame.sprite.Sprite):
             
             self.on_ground = False
             
-            self.vel_y = -6
+            self.vel_y = -7
             
         
         self.vel_y += settings.G
