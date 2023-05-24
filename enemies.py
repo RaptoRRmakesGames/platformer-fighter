@@ -4,7 +4,7 @@ from random import randint, choice
 import math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, id, shooting, least_x, max_x, damage, colour = (0,0,255), firerate=300) :
+    def __init__(self, pos, id, shooting, least_x, max_x, damage, colour = (0,0,255), firerate=300, speed=2) :
         pygame.sprite.Sprite.__init__(self)
         
         self.type = id 
@@ -12,11 +12,13 @@ class Enemy(pygame.sprite.Sprite):
         self.shooting = shooting
         self.damage = damage
         
+        self.speed = speed
+        
         self.least_x = least_x
         self.max_x = max_x
         
         self.flip = False
-        self.ori = 1 
+        self.ori = -1 
         
         # STATES ARE 'PATROL' AND 'ATTACK' 
         self.state = "patrol"
@@ -32,6 +34,16 @@ class Enemy(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(self.rect.center)
         
         self.color = colour
+        
+        self.vel_y = 0
+        self.next_y = 0
+        self.next_x = 0 
+        
+        self.should_stop = False
+        self.might_stop_interval = 1000
+        self.next_might_stop = pygame.time.get_ticks() + self.might_stop_interval
+        self.start_move_interval = 500
+        self.next_start_move = pygame.time.get_ticks()
         
     def shoot(self, player):
         
@@ -55,7 +67,7 @@ class Enemy(pygame.sprite.Sprite):
         imaginary_rect = pygame.Rect(imaginary_pos.x, imaginary_pos.y, 5, 5)
         e = 0
         
-        rects, step = 2, 100
+        rects, step = 7, 40
         
         while e < rects:
             imaginary_pos = imaginary_pos.move_towards(player_pos, step)
@@ -69,11 +81,80 @@ class Enemy(pygame.sprite.Sprite):
                     if tile > -1 and pygame.Rect(x*50, y*50, 50, 50).colliderect(imaginary_rect):
                         return "patrol"
             
-            pygame.draw.rect(screen, (255, 255, 0), imaginary_rect)
+            pygame.draw.rect(screen, (255, 0, 255), imaginary_rect)
             e += 1
         
         return "patrol"
+    
+    def collisions(self, tiles):
         
+        for y , row in enumerate(tiles):
+            for x, tile in enumerate(row):
+                
+                if tile > -1:
+                    
+                    tilerect = pygame.Rect(x*50, y*50, 50,50)
+                    
+                    # if tilerect.colliderect(self.rect.x + self.next_x, self.rect.y, self.rect.width, self.rect.height):
+                    #     self.flip = not self.flip
+                    #     self.ori *=-1 
+                        
+                    if tilerect.colliderect(self.rect.x, self.rect.y + self.next_y, self.rect.width, self.rect.height):
+    
+                        if self.vel_y >= 0.0:
+                            self.vel_y = 0 
+                            self.next_y = tilerect.top - self.rect.bottom
+                            
+    def move(self, player):
+        
+
+            
+        self.next_x = self.speed * self.ori
+        
+        if self.rect.x > self.max_x:
+        
+            self.ori = -1
+            
+            
+        if self.rect.x < self.least_x:
+            
+            self.ori = 1
+            
+        if self.state == 'attack' and not self.should_stop:
+            
+            time_now = pygame.time.get_ticks()
+            
+        #     if time_now > self.next_might_stop:
+            
+        #         e = randint(1,5)
+                
+        #         if e == 3:
+                    
+        #             self.should_stop = True
+                    
+                
+                
+        #         self.next_start_move = pygame.time.get_ticks() + self.start_move_interval + randint(-100,100)
+                
+        
+                    
+                    
+                
+        # if self.should_stop:
+            
+        #     if pygame.time.get_ticks() > self.next_start_move:
+                
+        #         self.next_might_stop = pygame.time.get_ticks() + self.might_stop_interval
+                
+        #         self.should_stop = False
+                
+                
+            
+        #         self.ori = 0 
+                
+        self.vel_y += settings.G
+        
+        self.next_y = self.vel_y
                     
     def update(self, screen, tiles, player):
         self.position = pygame.math.Vector2(self.rect.center)
@@ -82,9 +163,17 @@ class Enemy(pygame.sprite.Sprite):
         
         self.shoot(player)
         
+        self.move(player)
+        self.collisions(tiles)
+        
+        self.rect.x += self.next_x
+        self.rect.y += self.next_y
+        
         self.shoot_controller.update_bullets(screen, tiles)
         
-        
         pygame.draw.rect(screen,  self.color, self.rect)
+        
+        # print(self.least_x, self.max_x, self.rect.x, self.ori, self.state)
+        print(pygame.time.get_ticks(), self.should_stop, self.next_start_move, self.next_might_stop)
         
         

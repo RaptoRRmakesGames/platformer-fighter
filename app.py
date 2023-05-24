@@ -31,7 +31,7 @@ game.tiles['level'].edit_tile(11,7, 0)
 player = characters.Player((100,100))
 
 
-enemy_list = [enemies.Enemy((200,400), "normal", True, 0, 400, 5) for i in range(2)]
+enemy_list = [enemies.Enemy((100,400), "normal", True, 0, 200, 5) for i in range(2)]
 # enemy = enemies.Enemy((50,400), "normal", True, 0, 100, 5)
 
 slomo = False
