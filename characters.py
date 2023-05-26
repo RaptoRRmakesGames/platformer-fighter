@@ -92,6 +92,8 @@ class Player(pygame.sprite.Sprite):
         self.next_shot = pygame.time.get_ticks() + self.shot_interval
         self.can_shoot = True
         
+        self.double_jump = True
+        
     def update(self, screen, tiles):
         
         self.movement()
@@ -160,6 +162,12 @@ class Player(pygame.sprite.Sprite):
             
             self.vel_y = -7
             
+        if keys[K_SPACE] and self.double_jump and not self.on_ground and self.vel_y >-2:
+            
+            self.double_jump = False
+            
+            self.vel_y = -6.5
+            
         
         self.vel_y += settings.G
         
@@ -190,6 +198,7 @@ class Player(pygame.sprite.Sprite):
                         elif self.vel_y >= 0.0:
                             self.vel_y = 0 
                             self.on_ground = True
+                            self.double_jump = True
                             self.next_y = tilerect.top - self.rect.bottom
                             
                             

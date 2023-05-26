@@ -27,6 +27,10 @@ game.tiles['level'].edit_tile(11,9, 0)
 game.tiles['level'].edit_tile(11,8, 0)
 game.tiles['level'].edit_tile(11,7, 0)
 game.tiles['level'].edit_tile(7,3, 0)
+# game.tiles['level'].edit_tile(7,2, 0)
+# game.tiles['level'].edit_tile(7,1, 0)
+game.tiles['level'].edit_tile(7,0, 0)
+# game.tiles['level'].edit_tile(7,4, 0)
 
 # game.tiles['level'].load_level(f"level{level}.lvl")
 
