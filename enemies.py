@@ -47,6 +47,8 @@ class Enemy(pygame.sprite.Sprite):
         
         self.hp = hp
         
+        self.x = pos[0]
+        
     def shoot(self, player):
         
         if self.shooting and self.state == "attack":
@@ -88,20 +90,20 @@ class Enemy(pygame.sprite.Sprite):
         
         return "patrol"
     
-    def collisions(self, tiles):
+    def collisions(self, tiles, scroll):
         
         for y , row in enumerate(tiles):
             for x, tile in enumerate(row):
                 
                 if tile > -1:
                     
-                    tilerect = pygame.Rect(x*50, y*50, 50,50)
+                    tilerect = pygame.Rect(x*50 - scroll, y*50, 50,50)
                     
                     # if tilerect.colliderect(self.rect.x + self.next_x, self.rect.y, self.rect.width, self.rect.height):
                     #     self.flip = not self.flip
                     #     self.ori *=-1 
                         
-                    if tilerect.colliderect(self.rect.x, self.rect.y + self.next_y, self.rect.width, self.rect.height):
+                    if tilerect.colliderect(self.rect.x - scroll, self.rect.y + self.next_y, self.rect.width, self.rect.height):
     
                         if self.vel_y >= 0.0:
                             self.vel_y = 0 
@@ -182,7 +184,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.next_y = self.vel_y
                     
-    def update(self, screen, tiles, player, bullets, enemy_list):
+    def update(self, screen, tiles, player, bullets, enemy_list, scroll):
         self.position = pygame.math.Vector2(self.rect.center)
         
         self.state = self.detect_player(player, tiles, screen)
@@ -190,16 +192,18 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot(player)
         
         self.move(player)
-        self.collisions(tiles)
+        self.collisions(tiles, scroll)
         
         self.check_dead(bullets, enemy_list)
         
-        self.rect.x += self.next_x
+        self.x += self.next_x
         self.rect.y += self.next_y
+        
+        self.rect.x = self.x - scroll
         
         self.shoot_controller.update_bullets(screen, tiles)
         
-        pygame.draw.rect(screen,  self.color, self.rect)
+        pygame.draw.rect(screen,  self.color, pygame.Rect(self.rect.x - scroll, self.rect.y, 40,30))
         
         # print(self.least_x, self.max_x, self.rect.x, self.ori, self.state)
         # print(pygame.time.get_ticks(), self.should_stop, self.next_start_move, self.next_might_stop)

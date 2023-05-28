@@ -1,62 +1,44 @@
 import pygame, game_data, characters, enemies
 from pygame.locals import *
+from assets import IMAGES
 
-black = pygame.Surface((50,50))
-
-black.fill((0,0,0))
-
-
-game = game_data.Game((600,600), 50, (14,14), {0: black},140)
+game = game_data.Game((1000,700), 50, (0,0), IMAGES['ground'],140)
 
 level = 1
 
 run = True
 
-game.tiles['level'].edit_tile(10,0, 0)
-game.tiles['level'].edit_tile(10,1, 0)
-game.tiles['level'].edit_tile(10,2, 0)
-game.tiles['level'].edit_tile(10,3, 0)
-game.tiles['level'].edit_tile(10,4, 0)
-game.tiles['level'].edit_tile(10,7, 0)
-game.tiles['level'].edit_tile(9,7, 0)
-game.tiles['level'].edit_tile(9,8, 0)
-game.tiles['level'].edit_tile(11,10, 0)
-game.tiles['level'].edit_tile(11,11, 0)
-game.tiles['level'].edit_tile(10,11, 0)
-game.tiles['level'].edit_tile(11,9, 0)
-game.tiles['level'].edit_tile(11,8, 0)
-game.tiles['level'].edit_tile(11,7, 0)
-game.tiles['level'].edit_tile(7,3, 0)
-# game.tiles['level'].edit_tile(7,2, 0)
-# game.tiles['level'].edit_tile(7,1, 0)
-game.tiles['level'].edit_tile(7,0, 0)
-# game.tiles['level'].edit_tile(7,4, 0)
-
-# game.tiles['level'].load_level(f"level{level}.lvl")
+game.tiles['level'].load_level(f"level{level}.lvl")
 
 player = characters.Player((100,100))
 
 
 enemy_list = [enemies.Enemy((100,400), "normal", True, 0, 200, 5, hp=10) for i in range(1)]
-# enemy = enemies.Enemy((50,400), "normal", True, 0, 100, 5)
 
 slomo = False
+
+scroll_x = 0 
+
+true_scroll = 0
 
 while run: 
     game.update_game()
     
-    game.tiles['level'].draw_world((0,0))
+    # true_scroll -= 0.5
+    #true_scroll +=( player.rect.x - true_scroll - 400) /5
     
-    player.update(game.screens['screen'], game.tiles['level'].world_data)
+    scroll_x = int(true_scroll)
+    
+    game.tiles['level'].draw_world((scroll_x,0))
+    
+    player.update(game.screens['screen'], game.tiles['level'].world_data, scroll_x)
     
     for enemy in enemy_list:
     
-        enemy.update(game.screens['screen'], game.tiles['level'].world_data, player, player.shooter.bullets, enemy_list)
+        enemy.update(game.screens['screen'], game.tiles['level'].world_data, player, player.shooter.bullets, enemy_list, scroll_x)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            
-            game.tiles['level'].save_level(f"level{level}.lvl")
             
             run = False
             
@@ -70,24 +52,15 @@ while run:
                 
     if slomo :
         
-        game.clocks['target_fps'] = 60
+        game.clocks['target_fps'] = 25
         
     else: 
         game.clocks['target_fps'] = 140
-
-            
-    # keys = pygame.key.get_pressed()
-    
-    # if keys[K_f]:
-        
-    #     game.clocks['target_fps'] = 60
-    
-    # else: 
-
-    #     game.clocks['target_fps'] = 140
             
     pygame.display.set_caption(str(game.clocks['fps']) + "FPS" )
             
     # print(game.clocks['fps'], "FPS")
             
     pygame.display.flip()
+    
+pygame.quit()

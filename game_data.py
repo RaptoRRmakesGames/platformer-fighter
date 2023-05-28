@@ -9,7 +9,7 @@ class LevelEditor:
         
         self.world_data = []
         
-        for i in range(self.rows):
+        for _ in range(self.rows):
             
             self.world_data.append([-1] * self.collumns)
             
@@ -47,6 +47,13 @@ class LevelEditor:
     def edit_tile(self, x, y, new_num):
         
         self.world_data[x][y] = new_num
+        
+    def recreate_data(self):
+        self.world_data = []
+        
+        for i in range(self.rows):
+            
+            self.world_data.append([-1] * self.collumns)
    
 
 class Game:
@@ -72,12 +79,12 @@ class Game:
             "fps" : 0
         }
         
+        self.camera = {
+            "scroll_x" : 0
+        }
+        
     def update_game(self):
 
         self.clocks['clock'].tick_busy_loop(self.clocks['target_fps'])
         
         self.clocks['fps'] = round(self.clocks['clock'].get_fps())
-        
-        
-        # self.clocks['dt'] = self.clocks['clock'].tick() / 1000
-        

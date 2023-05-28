@@ -66,9 +66,6 @@ class ShootController:
         for bullet in self.bullets:
             
             bullet.update(screen, tiles)
-            
-        # print(len(self.bullets))
-
         
 
 class Player(pygame.sprite.Sprite):
@@ -96,20 +93,24 @@ class Player(pygame.sprite.Sprite):
         
         self.released_space = False
         
-    def update(self, screen, tiles):
+        self.x = pos[0]
+        
+    def update(self, screen, tiles, scroll):
         
         self.movement()
         
-        self.collisions(tiles)
+        self.collisions(tiles, scroll)
         
         self.handle_shooting()
         
         self.shooter.update_bullets(screen, tiles)
         
-        self.rect.x += self.next_x
+        self.x += self.next_x
         self.rect.y += self.next_y
         
-        pygame.draw.rect(screen, self.color, self.rect)
+        self.rect.x = self.x-scroll
+        
+        pygame.draw.rect(screen, self.color, pygame.Rect(self.rect.x, self.rect.y, 30,30))
         
     def handle_shooting(self):
         
@@ -167,10 +168,7 @@ class Player(pygame.sprite.Sprite):
         if not keys[K_SPACE] and not self.on_ground:
             
             self.released_space = True
-        
-        print(self.released_space)
-            
-            
+           
         if keys[K_SPACE] and self.double_jump and not self.on_ground and self.vel_y > -2:
             
             self.double_jump = False
@@ -183,7 +181,7 @@ class Player(pygame.sprite.Sprite):
             
         self.next_y = self.vel_y
         
-    def collisions(self, tiles):
+    def collisions(self, tiles, scroll):
         
        
         
@@ -193,12 +191,15 @@ class Player(pygame.sprite.Sprite):
                 
                 if tile > -1:
                     
-                    tilerect = pygame.Rect(x*50, y*50, 50,50)
+                    if tile != 2 and tile != 3:
+                        tilerect = pygame.Rect(x*50 , y*50, 50,50)
+                    else:
+                        tilerect = pygame.Rect(x*50 , y*50, 50,25)
                     
-                    if tilerect.colliderect(self.rect.x + self.next_x, self.rect.y, self.rect.width, self.rect.height):
+                    if tilerect.colliderect(self.rect.x + self.next_x - scroll, self.rect.y, self.rect.width, self.rect.height):
                         self.next_x = 0 
                         
-                    if tilerect.colliderect(self.rect.x, self.rect.y + self.next_y, self.rect.width, self.rect.height):
+                    if tilerect.colliderect(self.rect.x - scroll, self.rect.y + self.next_y, self.rect.width, self.rect.height):
                         
                         if self.vel_y < 0.0:
                             self.vel_y = 0 
