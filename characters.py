@@ -94,6 +94,8 @@ class Player(pygame.sprite.Sprite):
         
         self.double_jump = True
         
+        self.released_space = False
+        
     def update(self, screen, tiles):
         
         self.movement()
@@ -162,7 +164,14 @@ class Player(pygame.sprite.Sprite):
             
             self.vel_y = -7
             
-        if keys[K_SPACE] and self.double_jump and not self.on_ground and self.vel_y >-2:
+        if not keys[K_SPACE] and not self.on_ground:
+            
+            self.released_space = True
+        
+        print(self.released_space)
+            
+            
+        if keys[K_SPACE] and self.double_jump and not self.on_ground and self.vel_y > -2:
             
             self.double_jump = False
             
