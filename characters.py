@@ -103,7 +103,7 @@ class Player(pygame.sprite.Sprite):
         
     def update(self, screen, tiles, scroll):
         
-        self.movement()
+        self.movement(tiles)
         
         self.collisions(tiles, scroll)
         
@@ -131,7 +131,7 @@ class Player(pygame.sprite.Sprite):
         
             
         
-    def movement(self):
+    def movement(self, tiles):
         
         keys = pygame.key.get_pressed()
         
@@ -159,11 +159,11 @@ class Player(pygame.sprite.Sprite):
 
 
         
-        if keys[K_a]: # Moving Left
+        if keys[K_a] : # Moving Left
             
             self.next_x = -self.speed
             
-        if keys[K_d]: # Moving Right
+        if keys[K_d] : # Moving Right
             
             self.next_x = self.speed
             
@@ -197,6 +197,46 @@ class Player(pygame.sprite.Sprite):
             self.can_double = False
             
             self.doubled = False
+            
+        for y, row in enumerate(tiles):
+            
+            for x, tile in enumerate(row):
+                
+                if tile > -1:
+                    
+                    if tile != 2 and tile != 3:
+                        tilerect = pygame.Rect(x*50 , y*50, 50,50)
+                    else:
+                        tilerect = pygame.Rect(x*50 , y*50, 50,25)
+                        
+                    if tilerect.colliderect(self.rect.x + self.next_x , self.rect.y, self.rect.width, self.rect.height):
+                        
+                        if not self.on_ground and self.vel_y > 0:
+                            if pygame.key.get_pressed()[K_a] :
+                                self.vel_y /=1.2
+                                self.sliding = True
+                            
+                            
+                            
+                                if pygame.key.get_pressed()[K_w]:
+                                    self.vel_y = -2
+                            else:
+                                
+                                self.sliding = False
+                            
+                            if not self.on_ground and pygame.key.get_pressed()[K_d] :
+                                self.vel_y /=1.2
+                                self.sliding = True
+                            
+                            
+                            
+                                if pygame.key.get_pressed()[K_w]:
+                                    self.vel_y = -2
+                            else:
+                                
+                                self.sliding = False
+              
+                    # if pygame.key.get_pressed()[K_d]:
 
         # if self.on_ground and not keys[K_SPACE]:
             
@@ -244,16 +284,19 @@ class Player(pygame.sprite.Sprite):
                     
                     if tilerect.colliderect(self.rect.x + self.next_x - scroll, self.rect.y, self.rect.width, self.rect.height):
                         self.next_x = -0
-                        if not self.on_ground and pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_d]:
-                            self.sliding = True
-                            
-                            self.vel_y /=1.5
-                            
-                            if pygame.key.get_pressed()[K_SPACE]:
-                                self.vel_y = -8
-                                self.next_x = -25
-                            
+                        
+                        # # self.vel_y /=1.5
+                        # if not self.on_ground and pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_d]:
+                        #     self.sliding = True
+                          
+                          
+                          
+                        #     if pygame.key.get_pressed()[K_SPACE]:
+                        #         self.vel_y = -8
+                        #         self.next_x = -25
+                          
                                 # if pygame.key.get_pressed()[K_d]:
+                                
                                     
                                     
                                     

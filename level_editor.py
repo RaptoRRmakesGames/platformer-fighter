@@ -111,7 +111,17 @@ while run:
         
         selected_x = max_visible_x
     
+    key = pygame.mouse.get_pressed()
     
+    if key[0]:
+        print(f"place x:{selected_x} y:{selected_y}")
+    
+        tile_map.world_data[selected_x][selected_y] = mode
+        
+    if key[2]:
+        print(f"removed x:{selected_x} y:{selected_y}")
+    
+        tile_map.world_data[selected_x][selected_y] = -1
     
     draw_ui()
     
@@ -121,19 +131,6 @@ while run:
             
             run = False
             
-        if event.type == MOUSEBUTTONDOWN:
-            
-            if event.button == 1:
-            
-                print(f"place x:{selected_x} y:{selected_y}")
-            
-                tile_map.world_data[selected_x][selected_y] = mode
-                
-            if event.button == 3:
-                print(f"removed x:{selected_x} y:{selected_y}")
-            
-                tile_map.world_data[selected_x][selected_y] = -1
-                
                 
         if event.type == KEYDOWN:
             
@@ -175,6 +172,10 @@ while run:
                         tile_map.recreate_data()
                         tile_map.save_level(f"level{level}.lvl")
                         
+            if event.key == K_c:
+                
+                tile_map.recreate_data()
+                        
             
             if event.key == K_0 : 
                 
@@ -192,13 +193,13 @@ while run:
                 
                 mode = 3
                 
-            if event.key == K_4:
+            # if event.key == K_4:
                 
-                mode = 4
+            #     mode = 4
                 
-            if event.key == K_5:
+            # if event.key == K_5:
                 
-                mode = 5
+            #     mode = 5
                 
     draw_text(f"Level : {level}", (0,0,0), font2, (20,700))
     screen.blit(sample_images[mode], (220, 710))
