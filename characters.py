@@ -89,9 +89,15 @@ class Player(pygame.sprite.Sprite):
         self.next_shot = pygame.time.get_ticks() + self.shot_interval
         self.can_shoot = True
         
-        self.double_jump = True
+        self.double_jump = False
+        
+        self.doubled = False
         
         self.released_space = False
+        self.can_double = False
+        
+        self.sliding = False
+        
         
         self.x = pos[0]
         
@@ -150,6 +156,8 @@ class Player(pygame.sprite.Sprite):
             
             self.rect.height = 30
         
+
+
         
         if keys[K_a]: # Moving Left
             
@@ -159,21 +167,44 @@ class Player(pygame.sprite.Sprite):
             
             self.next_x = self.speed
             
+            
+            
         if keys[K_SPACE] and self.on_ground: # Jumping
             
             self.on_ground = False
+
+            self.vel_y = -8
+
+            self.doubled = True
+            if self.double_jump:
+                self.can_double = False
             
-            self.vel_y = -7
             
-        if not keys[K_SPACE] and not self.on_ground:
+            self.double_jump = not self.double_jump
+
+            print("up", self.double_jump)
             
-            self.released_space = True
-           
-        if keys[K_SPACE] and self.double_jump and not self.on_ground and self.vel_y > -2:
+        if not keys[K_SPACE] and self.doubled and not self.on_ground:
             
-            self.double_jump = False
+            self.can_double = True
             
-            self.vel_y = -6.5
+            print("jumped and no keys")
+            
+        if self.can_double and keys[K_SPACE]:
+        
+            self.vel_y = -5
+            
+            self.can_double = False
+            
+            self.doubled = False
+
+        # if self.on_ground and not keys[K_SPACE]:
+            
+        #     self.double_jump = False
+            
+            
+        
+            
             
         
         self.vel_y += settings.G
@@ -195,11 +226,10 @@ class Player(pygame.sprite.Sprite):
                         tilerect = pygame.Rect(x*50 , y*50, 50,50)
                     else:
                         tilerect = pygame.Rect(x*50 , y*50, 50,25)
-                    
-                    if tilerect.colliderect(self.rect.x + self.next_x - scroll, self.rect.y, self.rect.width, self.rect.height):
-                        self.next_x = 0 
                         
-                    if tilerect.colliderect(self.rect.x - scroll, self.rect.y + self.next_y, self.rect.width, self.rect.height):
+                    
+                        
+                    if tilerect.colliderect(self.rect.x - scroll, self.rect.y + self.next_y + self.next_y / 2, self.rect.width, self.rect.height):
                         
                         if self.vel_y < 0.0:
                             self.vel_y = 0 
@@ -208,8 +238,29 @@ class Player(pygame.sprite.Sprite):
                         elif self.vel_y >= 0.0:
                             self.vel_y = 0 
                             self.on_ground = True
-                            self.double_jump = True
+                            self.can_double = False
+                            # self.double_jump = True
                             self.next_y = tilerect.top - self.rect.bottom
+                    
+                    if tilerect.colliderect(self.rect.x + self.next_x - scroll, self.rect.y, self.rect.width, self.rect.height):
+                        self.next_x = -0
+                        if not self.on_ground and pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_d]:
+                            self.sliding = True
+                            
+                            self.vel_y /=1.5
+                            
+                            if pygame.key.get_pressed()[K_SPACE]:
+                                self.vel_y = -8
+                                self.next_x = -25
+                            
+                                # if pygame.key.get_pressed()[K_d]:
+                                    
+                                    
+                                    
+                                    
+                                
+                    
+
                             
                             
         # print(self.on_ground, self.vel_y, self.next_y)
